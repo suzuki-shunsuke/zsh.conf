@@ -1,0 +1,7 @@
+export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_SHELL=zsh
+export PATH=$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH
+
+if [ -d $PYENV_ROOT ]; then
+  eval "$(pyenv init -)"
+fi

@@ -1,0 +1,25 @@
+if [ -f ~/.zplug/init.zsh ]; then
+    source ~/.zplug/init.zsh
+fi
+
+zstyle :zplug:tag depth 1
+
+if [ $ZPLUG_HOME ]; then
+    # zplug "plugins/git", from:oh-my-zsh, if:"(( $+commands[git] ))"
+    # zplug "plugins/command-not-found", from:oh-my-zsh
+    zplug "zsh-users/zsh-completions"
+    # zplug "zsh-users/zsh-syntax-highlighting", defer:2
+    # zplug "mollifier/cd-gitroot"
+    zplug "mollifier/anyframe"
+    zplug "mafredri/zsh-async", on:sindresorhus/pure
+    zplug "sindresorhus/pure", use:pure.zsh, defer:2
+# 
+#     if ! zplug check --verbose; then
+#         printf "Install? [y/N]: "
+#         if read -q; then
+#             echo; zplug install
+#         fi
+#     fi
+# 
+    zplug load  # --verbose
+fi

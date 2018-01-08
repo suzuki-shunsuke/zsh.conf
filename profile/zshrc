@@ -1,0 +1,6 @@
+# profiling
+if [ -n "$ZSH_PROFILING" ]; then
+  if type zprof > /dev/null 2>&1; then
+    zprof | less
+  fi
+fi
