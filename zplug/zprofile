@@ -1,0 +1,3 @@
+# https://github.com/zplug/zplug
+export ZPLUG_HOME=$HOME/.zplug
+unset ZPLUG_SHALLOW

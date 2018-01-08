@@ -1,0 +1,2 @@
+# https://github.com/sindresorhus/pure#my-preprompt-is-missing-when-i-clear-the-screen-with-ctrll 
+zle -N clear-screen prompt_pure_clear_screen

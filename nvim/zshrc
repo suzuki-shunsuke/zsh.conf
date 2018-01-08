@@ -1,0 +1,6 @@
+# vim
+if builtin command -v nvim > /dev/null; then
+    alias vi="nvim"
+    alias vimdiff='nvim -d -u ~/.config/nvim/init.vim'
+    alias vdf='nvim -d -u ~/.config/nvim/init.vim'
+fi

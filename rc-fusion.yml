@@ -1,0 +1,10 @@
+root: .
+entry:
+  zprofile:
+    # dest: rc-fusion/zprofile.built
+    dest: .zprofile
+  zshrc:
+    # dest: rc-fusion/zshrc.built
+    dest: .zshrc
+  zshenv:
+    dest: .zshenv

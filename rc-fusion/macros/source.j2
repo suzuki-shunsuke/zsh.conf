@@ -1,0 +1,7 @@
+{% macro local(patterns) -%}
+  {% for pattern in globs(*patterns) %}
+source
+{% include pattern %}{# insert new line after 'include' #}
+
+  {% endfor %}
+{%- endmacro %}

@@ -1,0 +1,6 @@
+# hub
+# https://hub.github.com/
+if builtin command -v hub > /dev/null; then
+    alias git=hub
+    # eval "$(hub alias -s)"
+fi

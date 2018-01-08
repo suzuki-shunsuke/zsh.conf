@@ -1,0 +1,4 @@
+flake8
+ipdb
+ipython
+pip-tools

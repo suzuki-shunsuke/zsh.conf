@@ -1,0 +1,4 @@
+ANDROID_SDK_PATH=$HOME/Library/Android/sdk/platform-tools
+if [ -d "$ANDROID_SDK_PATH" ]; then
+  export PATH=$ANDROID_SDK_PATH:$PATH
+fi

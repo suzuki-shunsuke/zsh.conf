@@ -1,0 +1,7 @@
+GNUMANPATH=/usr/local/opt/findutils/libexec/gnuman
+if [ -d "$GNUMANPATH" ]; then
+  export MANPATH=$GNUMANPATH:$MANPATH
+fi
+if builtin command -v direnv > /dev/null; then
+  export PATH=$(brew --prefix coreutils)/libexec/gnubin:/usr/local/opt/findutils/libexec/gnubin:$PATH
+fi

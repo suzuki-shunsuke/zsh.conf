@@ -1,0 +1,5 @@
+# npm run aliases
+NPM_ALIASES=(babel bower esdoc eslint express grunt gulp mocha rollup webpack webpack-dev-server pm2)
+for i in $NPM_ALIASES; do
+    alias $i="npm run $i"
+done
