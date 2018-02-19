@@ -31,6 +31,7 @@ export EDITOR=nvim
 # export FPATH="$HOME/.ghq/github.com/suzuki-shunsuke/zsh.conf/functions:${FPATH}"
 
 {{ local([
+  "golang/zprofile",
   "secrets/zprofile",
   "**/zprofile", "!zprofile",
   "!android-sdk/zprofile", "!dckrm/zprofile",
