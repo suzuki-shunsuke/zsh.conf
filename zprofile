@@ -17,10 +17,10 @@ export XDG_CONFIG_HOME=$HOME/.config
 
 typeset -U path
 path=(
+    $HOME/bin
     /usr/local/bin
     /usr/sbin
     /sbin
-    $HOME/bin
     $path
 )
 export PATH

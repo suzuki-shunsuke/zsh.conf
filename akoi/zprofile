@@ -1,0 +1,1 @@
+export AKOI_CONFIG_PATH="$HOME/.akoi.yml"
