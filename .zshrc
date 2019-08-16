@@ -4,6 +4,22 @@ fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
 autoload -Uz colors
 # compinit -u
 
+# create the pull request based on the current branch
+_git-pr() {
+  local branch=`git-current-branch`
+  git push origin $branch || return 1
+  git pull-request -o -h $GIT_USERNAME:$branch
+}
+
+git-browse() {
+  local remote=`git config branch.master.remote`
+  test "$remote" != "" || return 1
+  if [ $# -eq 1 ]; then
+    remote=$1
+  fi
+  open `git config remote.${remote}.url` &
+}
+
 nx() {
   npm --silent run $1 -- ${@:2}
 }
