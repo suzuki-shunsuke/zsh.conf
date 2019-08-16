@@ -4,9 +4,5 @@
 # direnv
 .direnv
 
-# zsh
-.zprofile
-.zshenv
-.zshrc
-
 secrets
+secret
