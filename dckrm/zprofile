@@ -1,5 +1,0 @@
-# dckrm
-# https://github.com/suzuki-shunsuke/dckrm
-if builtin command -v nvim > /dev/null; then
-    export DCKRM_EDITOR=nvim
-fi

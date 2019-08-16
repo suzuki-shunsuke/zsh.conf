@@ -1,4 +1,0 @@
-# dirssh
-# https://github.com/suzuki-shunsuke/dirssh
-export DIRSSH_ALIAS=ssh
-export DIRSSH_CFGNAME=sshcfg
