@@ -8,7 +8,7 @@ autoload -Uz colors
 _git-pr() {
   local branch=`git-current-branch`
   git push origin $branch || return 1
-  git pull-request -o -h $GIT_USERNAME:$branch
+  hub pull-request -o -h $GIT_USERNAME:$branch
 }
 
 git-browse() {
