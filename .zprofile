@@ -69,6 +69,9 @@ export path=(
   # https://qiita.com/moroi/items/53d60d1d6885795a0f6f
   # https://qiita.com/kinichiro/items/3108e950b056963c33ad
   /usr/local/Cellar/openssl/1.0.2s/bin
+  # https://qiita.com/eumesy/items/3bb39fc783c8d4863c5f
+  # GNU sed
+  /usr/local/opt/gnu-sed/libexec/gnubin
   $path
 )
 
