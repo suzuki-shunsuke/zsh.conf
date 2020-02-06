@@ -61,6 +61,8 @@ export path=(
   $PYENV_ROOT/bin
   $PYENV_ROOT/shims
   $HOME/go/bin
+  # rust
+  $HOME/.cargo/bin
   $HOME/repos/bin
   # https://github.com/hokaccha/nodebrew
   $HOME/.nodebrew/current/bin
