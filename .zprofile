@@ -44,7 +44,7 @@ if builtin command -v direnv > /dev/null; then
   )
 fi
 
-export GOPATH=$HOME/go:/usr/local/opt/go/libexec:$GOPATH
+# export GOPATH=$HOME/go:/usr/local/opt/go/libexec:$GOPATH
 
 export HISTSIZE=1000
 export HISTFILE=$HOME/.zsh_history
@@ -56,6 +56,8 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
 
 export path=(
+  ${KREW_ROOT:-$HOME/.krew}/bin
+  $HOME/.akoi/bin
   $HOME/bin
   $RBENV_ROOT/bin
   $PYENV_ROOT/bin
@@ -74,10 +76,12 @@ export path=(
   # https://qiita.com/eumesy/items/3bb39fc783c8d4863c5f
   # GNU sed
   /usr/local/opt/gnu-sed/libexec/gnubin
+  # GNU grep; brew install grep
+  /usr/local/opt/grep/libexec/gnubin
   $path
 )
 
-if [ -d $RBENV_ROOT/bin ]; then
+if [ -d $RBENV_ROOT ]; then
   eval "$(rbenv init -)"
 fi
 
@@ -106,3 +110,5 @@ export GOROOT=$(go env GOROOT)
 # load this machine specific configuration
 [ -f $HOME/zsh.d/zprofile ] && source $HOME/zsh.d/zprofile
 [ -f $HOME/zsh.d/zprofile_secret ] && source $HOME/zsh.d/zprofile_secret
+
+export PATH="$HOME/.cargo/bin:$PATH"

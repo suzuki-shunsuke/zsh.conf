@@ -2,7 +2,8 @@ fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
 
 # autoload -Uz compinit
 autoload -Uz colors
-# compinit -u
+autoload -U compinit
+compinit -u
 
 # create the pull request based on the current branch
 _git-pr() {
@@ -68,6 +69,8 @@ alias sudo="sudo -E"
 alias ls="gls --color=auto"
 alias npm="npm --silent"
 alias tf="terraform"
+alias kb="kubectl"
+alias cx="cmdx"
 
 bindkey -v
 
@@ -98,6 +101,7 @@ if [ $ZPLUG_HOME ]; then
     zplug "mollifier/anyframe", defer:2
     zplug "mafredri/zsh-async", on:sindresorhus/pure
     zplug "sindresorhus/pure", use:pure.zsh, defer:3
+    zplug "lukechilds/zsh-nvm"
 
 # 
 #     if ! zplug check --verbose; then
@@ -214,6 +218,11 @@ if [ -n "$ZSH_PROFILING" ]; then
     zprof | less
   fi
 fi
+
+cdx() {
+  cd `dirname $(git ls-files | fzf)`
+}
+
 # https://github.com/sindresorhus/pure#my-preprompt-is-missing-when-i-clear-the-screen-with-ctrll 
 zle -N clear-screen prompt_pure_clear_screen
 # fzf
@@ -237,6 +246,19 @@ eval "$(jump shell)"
 # https://github.com/jonmosco/kube-ps1
 source "/usr/local/opt/kube-ps1/share/kube-ps1.sh"
 PS1='$(kube_ps1)'$PS1
+kubeoff
 
 # load this machine specific configuration
 [ -f $HOME/zsh.d/zshrc ] && source $HOME/zsh.d/zshrc
+
+# The next line updates PATH for the Google Cloud SDK.
+# if [ -f '/Users/shunsuke-suzuki/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/shunsuke-suzuki/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+# if [ -f '/Users/shunsuke-suzuki/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/shunsuke-suzuki/google-cloud-sdk/completion.zsh.inc'; fi
+
+URFAVE_CLI_COMPLETION=$HOME/repos/src/github.com/urfave/cli/autocomplete/zsh_autocomplete
+if [ -f "$URFAVE_CLI_COMPLETION" ]; then
+  PROG=cmdx
+  source "$URFAVE_CLI_COMPLETION"
+fi
