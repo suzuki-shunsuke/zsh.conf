@@ -5,4 +5,4 @@ if [ -n "$ZSH_PROFILING" ]; then
 fi
 
 # load this machine specific configuration
-[ -f $HOME/zsh.d/zshenv ] && source $HOME/zsh.d/zshenv
+[ -f "$HOME/zsh.d/zshenv" ] && source "$HOME/zsh.d/zshenv"

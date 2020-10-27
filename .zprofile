@@ -14,7 +14,7 @@ esac
 
 # XDG Base Direcotry Specification
 # https://wiki.archlinux.org/index.php/XDG_Base_Directory
-export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CONFIG_HOME="$HOME/.config"
 
 typeset -U path
 export path=(
@@ -33,7 +33,7 @@ export GHQ_ROOT=~/repos/src
 
 GNUMANPATH=/usr/local/opt/findutils/libexec/gnuman
 if [ -d "$GNUMANPATH" ]; then
-  export MANPATH=$GNUMANPATH:$MANPATH
+  export MANPATH="$GNUMANPATH:$MANPATH"
 fi
 
 if builtin command -v direnv > /dev/null; then
@@ -47,10 +47,10 @@ fi
 # export GOPATH=$HOME/go:/usr/local/opt/go/libexec:$GOPATH
 
 export HISTSIZE=1000
-export HISTFILE=$HOME/.zsh_history
+export HISTFILE="$HOME/.zsh_history"
 export SAVEHIST=100000
 
-export RBENV_ROOT=$HOME/.rbenv
+export RBENV_ROOT="$HOME/.rbenv"
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
@@ -81,34 +81,34 @@ export path=(
   $path
 )
 
-if [ -d $RBENV_ROOT ]; then
+if [ -d "$RBENV_ROOT" ]; then
   eval "$(rbenv init -)"
 fi
 
 # SSH Agent Configuration
 if [ -z "$SSH_AUTH_SOCK" ]; then
-  eval `ssh-agent` > /dev/null
-  export SSH_AUTH_SOCK=$SSH_AUTH_SOCK
+  eval $(ssh-agent) > /dev/null
+  export "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
 fi
 
 # https://virtualenvwrapper.readthedocs.io/en/latest/
-export WORKON_HOME=$HOME/.virtualenvs
+export "WORKON_HOME=$HOME/.virtualenvs"
 
 # https://github.com/zplug/zplug
-export ZPLUG_HOME=$HOME/.zplug
+export "ZPLUG_HOME=$HOME/.zplug"
 unset ZPLUG_SHALLOW
 
-if [ -d $PYENV_ROOT ]; then
+if [ -d "$PYENV_ROOT" ]; then
   eval "$(pyenv init -)"
 fi
-if which pyenv > /dev/null && [ -d $(pyenv root)/plugins/pyenv-virtualenv ]; then
+if which pyenv > /dev/null && [ -d "$(pyenv root)/plugins/pyenv-virtualenv" ]; then
   eval "$(pyenv virtualenv-init -)"
 fi
 
-export GOROOT=$(go env GOROOT)
+export "GOROOT=$(go env GOROOT)"
 
 # load this machine specific configuration
-[ -f $HOME/zsh.d/zprofile ] && source $HOME/zsh.d/zprofile
-[ -f $HOME/zsh.d/zprofile_secret ] && source $HOME/zsh.d/zprofile_secret
+[ -f "$HOME/zsh.d/zprofile" ] && source "$HOME/zsh.d/zprofile"
+[ -f "$HOME/zsh.d/zprofile_secret" ] && source "$HOME/zsh.d/zprofile_secret"
 
 export PATH="$HOME/.cargo/bin:$PATH"

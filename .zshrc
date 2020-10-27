@@ -7,18 +7,20 @@ compinit -u
 
 # create the pull request based on the current branch
 _git-pr() {
-  local branch=`git-current-branch`
-  git push origin $branch || return 1
-  hub pull-request -o -h $GIT_USERNAME:$branch
+  local branch
+  branch=$(git-current-branch)
+  git push origin "$branch" || return 1
+  hub pull-request -o -h "$GIT_USERNAME:$branch"
 }
 
 git-browse() {
-  local remote=`git config branch.master.remote`
+  local remote
+  remote=$(git config branch.master.remote)
   test "$remote" != "" || return 1
   if [ $# -eq 1 ]; then
     remote=$1
   fi
-  open `git config remote.${remote}.url` &
+  open "$(git config remote.${remote}.url)" &
 }
 
 nx() {
@@ -43,7 +45,7 @@ clone_pr() {
     return 0
   fi
   echo "+ git fetch $remote pull/$pr_id/head:$branch_name"
-  git fetch $remote pull/$pr_id/head:$branch_name
+  git fetch "$remote" "pull/$pr_id/head:$branch_name"
 }
 
 dctag() {
@@ -96,7 +98,7 @@ if [ $ZPLUG_HOME ]; then
     # zplug "mollifier/cd-gitroot"
     
     # load this machine specific configuration
-    [ -f $HOME/zsh.d/zplug ] && source $HOME/zsh.d/zplug
+    [ -f "$HOME/zsh.d/zplug" ] && source "$HOME/zsh.d/zplug"
 
     zplug "mollifier/anyframe", defer:2
     zplug "mafredri/zsh-async", on:sindresorhus/pure
@@ -140,20 +142,18 @@ alias gstau='git stash -u'
 alias gstaa='git stash --apply'
 alias gcb='git_current_branch'
 alias gp='git push'
-alias gpp='git push origin `git_current_branch`'
+alias gpp='git push origin $(git_current_branch)'
+alias gppf='git push origin $(git_current_branch) --force'
+alias gll='git pull origin $(git_current_branch)'
 alias gf='git fetch'
 alias gm='git merge'
 alias gmom='git merge origin/master'
 alias gmum='git merge upstream/master'
 alias gst='git status'
 alias glog='git log'
-alias grm='git rm'
-alias grmr='git rm -r'
-alias gtag='git tag'
 alias gtaga='git tag -a'
 alias gdt='git difftool'
 alias gdtc='git difftool --cached'
-alias gpoft='git push origin --follow-tags'
 alias gcm='git checkout master'
 alias gco='git checkout'
 
@@ -192,14 +192,14 @@ upgrade-nodebrew() {
   fi
   NODE_VERSION=$1
 
-  nodebrew install-binary $NODE_VERSION
-  nodebrew use $NODE_VERSION
+  nodebrew install-binary "$NODE_VERSION"
+  nodebrew use "$NODE_VERSION"
 
   npm i -g $PACKAGES
 
   for LINK in "${LINKS[@]}"; do
-    ghq get suzuki-shunsuke/generator-ss-$LINK
-    cd `ghq root`/github.com/suzuki-shunsuke/generator-ss-$LINK
+    ghq get "suzuki-shunsuke/generator-ss-$LINK"
+    cd "$(ghq root)/github.com/suzuki-shunsuke/generator-ss-$LINK"
     if [ -d node_modules ]; then
       rm -R node_modules
     fi
@@ -220,14 +220,14 @@ if [ -n "$ZSH_PROFILING" ]; then
 fi
 
 cdx() {
-  cd `dirname $(git ls-files | fzf)`
+  cd "$(dirname $(git ls-files | fzf))"
 }
 
 # https://github.com/sindresorhus/pure#my-preprompt-is-missing-when-i-clear-the-screen-with-ctrll 
 zle -N clear-screen prompt_pure_clear_screen
 # fzf
 # https://github.com/junegunn/fzf
-[ -f $HOME/.fzf.zsh ] && source $HOME/.fzf.zsh
+[ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
 # anyframe
 # https://github.com/mollifier/anyframe
 bindkey '^xb' anyframe-widget-cdr
@@ -249,7 +249,7 @@ PS1='$(kube_ps1)'$PS1
 kubeoff
 
 # load this machine specific configuration
-[ -f $HOME/zsh.d/zshrc ] && source $HOME/zsh.d/zshrc
+[ -f "$HOME/zsh.d/zshrc" ] && source "$HOME/zsh.d/zshrc"
 
 # The next line updates PATH for the Google Cloud SDK.
 # if [ -f '/Users/shunsuke-suzuki/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/shunsuke-suzuki/google-cloud-sdk/path.zsh.inc'; fi
@@ -257,7 +257,7 @@ kubeoff
 # The next line enables shell command completion for gcloud.
 # if [ -f '/Users/shunsuke-suzuki/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/shunsuke-suzuki/google-cloud-sdk/completion.zsh.inc'; fi
 
-URFAVE_CLI_COMPLETION=$HOME/repos/src/github.com/urfave/cli/autocomplete/zsh_autocomplete
+URFAVE_CLI_COMPLETION="$HOME/repos/src/github.com/urfave/cli/autocomplete/zsh_autocomplete"
 if [ -f "$URFAVE_CLI_COMPLETION" ]; then
   PROG=cmdx
   source "$URFAVE_CLI_COMPLETION"
