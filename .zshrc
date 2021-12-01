@@ -31,6 +31,10 @@ replace() {
   ag -l --hidden "$1" | xargs -n 1 gsed -i "s/$1/$2/g"
 }
 
+git_replace() {
+  git grep -l "$1" | xargs -n 1 gsed -i "s/$1/$2/g"
+}
+
 clone_pr() {
   read "remote?remote (ex. origin, upstream): "
   if [ "$remote" = "" ]; then
@@ -71,7 +75,7 @@ alias sudo="sudo -E"
 alias ls="gls --color=auto"
 alias npm="npm --silent"
 alias tf="terraform"
-alias kb="kubectl"
+alias k="kubectl"
 alias cx="cmdx"
 
 bindkey -v

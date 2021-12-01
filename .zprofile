@@ -56,8 +56,9 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
 
 export path=(
+  $HOME/google-cloud-sdk/bin
   ${KREW_ROOT:-$HOME/.krew}/bin
-  $HOME/.akoi/bin
+  $HOME/.aqua/bin
   $HOME/bin
   $RBENV_ROOT/bin
   $PYENV_ROOT/bin
@@ -104,8 +105,6 @@ fi
 if which pyenv > /dev/null && [ -d "$(pyenv root)/plugins/pyenv-virtualenv" ]; then
   eval "$(pyenv virtualenv-init -)"
 fi
-
-export "GOROOT=$(go env GOROOT)"
 
 # load this machine specific configuration
 [ -f "$HOME/zsh.d/zprofile" ] && source "$HOME/zsh.d/zprofile"
