@@ -1,4 +1,0 @@
-# The next line updates PATH for the Google Cloud SDK.
-[ -f /usr/local/lib/google-cloud-sdk/path.zsh.inc ] && source '/usr/local/lib/google-cloud-sdk/path.zsh.inc'
-# The next line enables shell command completion for gcloud.
-[ -f /usr/local/lib/google-cloud-sdk/completion.zsh.inc ] && source '/usr/local/lib/google-cloud-sdk/completion.zsh.inc'

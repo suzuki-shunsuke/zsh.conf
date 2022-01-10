@@ -1,3 +1,0 @@
-if which pyenv > /dev/null && [ -d $(pyenv root)/plugins/pyenv-virtualenv ]; then
-  eval "$(pyenv virtualenv-init -)"
-fi

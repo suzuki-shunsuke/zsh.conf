@@ -1,2 +1,0 @@
-# https://virtualenvwrapper.readthedocs.io/en/latest/
-export WORKON_HOME=$HOME/.virtualenvs
