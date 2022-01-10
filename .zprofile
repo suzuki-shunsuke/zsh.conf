@@ -36,7 +36,7 @@ if [ -d "$GNUMANPATH" ]; then
   export MANPATH="$GNUMANPATH:$MANPATH"
 fi
 
-if builtin command -v direnv > /dev/null; then
+if builtin command -v direnv > /dev/null >&2; then
   export path=(
     $(brew --prefix coreutils)/libexec/gnubin
     /usr/local/opt/findutils/libexec/gnubin
@@ -58,7 +58,6 @@ export PYENV_SHELL=zsh
 export path=(
   $HOME/google-cloud-sdk/bin
   ${KREW_ROOT:-$HOME/.krew}/bin
-  $HOME/.aqua/bin
   $HOME/bin
   $RBENV_ROOT/bin
   $PYENV_ROOT/bin
@@ -111,3 +110,5 @@ fi
 [ -f "$HOME/zsh.d/zprofile_secret" ] && source "$HOME/zsh.d/zprofile_secret"
 
 export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua/bin:$PATH"
+export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME:-$HOME/.config}/aquaproj-aqua/aqua.yaml"
