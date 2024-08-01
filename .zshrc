@@ -141,7 +141,7 @@ export GPG_TTY=$(tty)
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  . "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 # autoload -Uz compinit
@@ -259,11 +259,11 @@ alias gch='git commit --amend -C HEAD'
 alias gsta='git stash'
 alias gstau='git stash -u'
 alias gstaa='git stash --apply'
-alias gcb='git_current_branch'
+alias gcb='git-current-branch'
 alias gp='git push'
-alias gpp='git push origin $(git_current_branch)'
-alias gppf='git push origin $(git_current_branch) --force'
-alias gll='git pull origin $(git_current_branch)'
+alias gpp='git push origin $(git-current-branch)'
+alias gppf='git push origin $(git-current-branch) --force'
+alias gll='git pull origin $(git-current-branch)'
 alias gf='git fetch'
 alias gm='git merge'
 alias gmom='git merge origin/master'
