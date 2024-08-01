@@ -1,4 +1,127 @@
-fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
+# uncomment out when profiling
+# export ZSH_PROFILING=1
+if [ -n "$ZSH_PROFILING" ]; then
+  zmodload zsh/zprof && zprof
+fi
+
+case ${OSTYPE} in
+  darwin*)
+    # mac
+    # don't read /etc/profile where path_helper is called
+    # prevent overwrite of environment variables
+    # https://takuya-1st.hatenablog.jp/entry/2013/12/14/040814
+    # https://memo.sugyan.com/entry/20151211/1449833480
+    setopt no_global_rcs
+    ;;
+  linux*)
+    # linux
+    ;;
+esac
+
+# XDG Base Direcotry Specification
+# https://wiki.archlinux.org/index.php/XDG_Base_Directory
+export XDG_CONFIG_HOME="$HOME/.config"
+
+typeset -U path
+export path=(
+  /usr/local/bin
+  /usr/sbin
+  /sbin
+  $path
+)
+
+export EDITOR=nvim
+
+# export FPATH=~/.ghq/github.com/suzuki-shunsuke/zsh.conf:$FPATH
+# export FPATH="$HOME/.ghq/github.com/suzuki-shunsuke/zsh.conf/functions:${FPATH}"
+# https://github.com/motemen/ghq
+export GHQ_ROOT=~/repos/src
+
+brew_path=/opt/homebrew/bin/brew
+if [ -f "$brew_path" ]; then
+  eval "$("$brew_path" shellenv)"
+fi
+
+add_manpath() {
+  for dir in "$@"; do
+    if [ -d "$dir" ]; then
+      export MANPATH="$dir:$MANPATH"
+    fi
+  done
+}
+
+if command -v brew > /dev/null; then
+  export path=(
+    "$(brew --prefix coreutils)/libexec/gnubin"(N-/)
+    "$(brew --prefix findutils)/libexec/gnubin"(N-/)
+    "$(brew --prefix gnu-sed)/libexec/gnubin"(N-/)
+    "$(brew --prefix grep)/libexec/gnubin"(N-/)
+    $path
+  )
+
+  add_manpath "$(brew --prefix coreutils)/libexec/gnuman" "$(brew --prefix findutils)/libexec/gnuman"
+
+  fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
+fi
+
+export HISTSIZE=1000
+export HISTFILE="$HOME/.zsh_history"
+export SAVEHIST=100000
+
+export RBENV_ROOT="$HOME/.rbenv"
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_SHELL=zsh
+
+export path=(
+  $HOME/google-cloud-sdk/bin(N-/)
+  ${KREW_ROOT:-$HOME/.krew}/bin(N-/)
+  $HOME/bin(N-/)
+  $RBENV_ROOT/bin(N-/)
+  $PYENV_ROOT/bin(N-/)
+  $PYENV_ROOT/shims(N-/)
+  $HOME/go/bin(N-/)
+  # rust
+  $HOME/.cargo/bin(N-/)
+  # https://github.com/hokaccha/nodebrew
+  # $HOME/.nodebrew/current/bin
+  # Use openssl instead of LibreSSL
+  # https://qiita.com/moroi/items/53d60d1d6885795a0f6f
+  # https://qiita.com/kinichiro/items/3108e950b056963c33ad
+  # /usr/local/Cellar/openssl/1.0.2s/bin(N-/)
+  "${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin"
+  $path
+)
+
+if [ -d "$RBENV_ROOT" ]; then
+  eval "$(rbenv init -)"
+fi
+
+# SSH Agent Configuration
+if [ -z "$SSH_AUTH_SOCK" ]; then
+  eval $(ssh-agent) > /dev/null
+  export "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
+fi
+
+# https://virtualenvwrapper.readthedocs.io/en/latest/
+export "WORKON_HOME=$HOME/.virtualenvs"
+
+# https://github.com/zplug/zplug
+# export "ZPLUG_HOME=$HOME/.zplug"
+# unset ZPLUG_SHALLOW
+
+if [ -d "$PYENV_ROOT" ]; then
+  eval "$(pyenv init -)"
+fi
+if command -v pyenv > /dev/null && [ -d "$(pyenv root)/plugins/pyenv-virtualenv" ]; then
+  eval "$(pyenv virtualenv-init -)"
+fi
+
+# load this machine specific configuration
+# [ -f "$HOME/zsh.d/zprofile" ] && source "$HOME/zsh.d/zprofile"
+# [ -f "$HOME/zsh.d/zprofile_secret" ] && source "$HOME/zsh.d/zprofile_secret"
+
+export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${$GHQ_ROOT}/github.com/aquaproj/aqua-registry/aqua-all.yaml"
 
 # autoload -Uz compinit
 autoload -Uz colors
@@ -52,25 +175,6 @@ clone_pr() {
   git fetch "$remote" "pull/$pr_id/head:$branch_name"
 }
 
-dctag() {
-  if [ $# -eq 0 -o "$1" = "help" -o "$1" = "--help" -o "$1" = "-help" ]; then
-    cat << EOS
-List Docker image tags
-Usage: $ dctag <image name>
-ex. $ dctag alpine
-EOS
-    return 0
-  fi
-  if [ $# -ne 1 ]; then
-    cat << EOS >&2
-Too many arguments
-For help, please run 'dctag help'
-EOS
-    return 1
-  fi
-  reg tags "$1" | grep ".*\..*" | sort -rV
-}
-
 alias sudo="sudo -E"
 alias ls="gls --color=auto"
 alias npm="npm --silent"
@@ -88,37 +192,37 @@ autoload -Uz zmv
 autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
 add-zsh-hook chpwd chpwd_recent_dirs
 
-if [ -f ~/.zplug/init.zsh ]; then
-    source ~/.zplug/init.zsh
-fi
+# if [ -f ~/.zplug/init.zsh ]; then
+#     source ~/.zplug/init.zsh
+# fi
 
-zstyle :zplug:tag depth 1
+# zstyle :zplug:tag depth 1
 
-if [ $ZPLUG_HOME ]; then
-    # zplug "plugins/git", from:oh-my-zsh, if:"(( $+commands[git] ))"
-    # zplug "plugins/command-not-found", from:oh-my-zsh
-    zplug "zsh-users/zsh-completions"
-    # zplug "zsh-users/zsh-syntax-highlighting", defer:2
-    # zplug "mollifier/cd-gitroot"
-    
-    # load this machine specific configuration
-    [ -f "$HOME/zsh.d/zplug" ] && source "$HOME/zsh.d/zplug"
-
-    zplug "mollifier/anyframe", defer:2
-    zplug "mafredri/zsh-async", on:sindresorhus/pure
-    zplug "sindresorhus/pure", use:pure.zsh, defer:3
-    zplug "lukechilds/zsh-nvm"
-
+# if [ $ZPLUG_HOME ]; then
+#     # zplug "plugins/git", from:oh-my-zsh, if:"(( $+commands[git] ))"
+#     # zplug "plugins/command-not-found", from:oh-my-zsh
+#     zplug "zsh-users/zsh-completions"
+#     # zplug "zsh-users/zsh-syntax-highlighting", defer:2
+#     # zplug "mollifier/cd-gitroot"
+#     
+#     # load this machine specific configuration
+#     [ -f "$HOME/zsh.d/zplug" ] && source "$HOME/zsh.d/zplug"
 # 
-#     if ! zplug check --verbose; then
-#         printf "Install? [y/N]: "
-#         if read -q; then
-#             echo; zplug install
-#         fi
-#     fi
+#     zplug "mollifier/anyframe", defer:2
+#     zplug "mafredri/zsh-async", on:sindresorhus/pure
+#     zplug "sindresorhus/pure", use:pure.zsh, defer:3
+#     zplug "lukechilds/zsh-nvm"
 # 
-    zplug load  # --verbose
-fi
+# # 
+# #     if ! zplug check --verbose; then
+# #         printf "Install? [y/N]: "
+# #         if read -q; then
+# #             echo; zplug install
+# #         fi
+# #     fi
+# # 
+#     zplug load  # --verbose
+# fi
 
 # direnv
 # https://github.com/direnv/direnv
@@ -164,68 +268,27 @@ alias gco='git checkout'
 git-current-branch() {
     git branch | grep "^\* " | sed -e "s/^\* \(.*\)/\1/"
 }
-# GVM(Go Version Manager)
-# https://github.com/moovweb/gvm
-[ -s "$HOME/.gvm/scripts/gvm" ] && source "$HOME/.gvm/scripts/gvm"
+
 # hub
 # https://hub.github.com/
 if builtin command -v hub > /dev/null; then
     alias git=hub
     # eval "$(hub alias -s)"
 fi
-PACKAGES=(
-  yo
-  yeoman-generator
-  generator-generator
-  @angular/cli
-  generator-ss-ansible-playbook
-  vue-cli
-)
 
-LINKS=(
-  flask
-  jenkins
-  elasticsearch-kibana
-  consul-servers
-)
-
-upgrade-nodebrew() {
-  if [ $# -ne 1 ]; then
-    echo "the number of argument should be 1" 1>&2
-    exit 1
-  fi
-  NODE_VERSION=$1
-
-  nodebrew install-binary "$NODE_VERSION"
-  nodebrew use "$NODE_VERSION"
-
-  npm i -g $PACKAGES
-
-  for LINK in "${LINKS[@]}"; do
-    ghq get "suzuki-shunsuke/generator-ss-$LINK"
-    cd "$(ghq root)/github.com/suzuki-shunsuke/generator-ss-$LINK"
-    if [ -d node_modules ]; then
-      rm -R node_modules
-    fi
-    npm link
-  done
-}
 # vim
 if builtin command -v nvim > /dev/null; then
     alias vi="nvim"
     alias vimdiff='nvim -d -u ~/.config/nvim/init.vim'
     alias vdf='nvim -d -u ~/.config/nvim/init.vim'
 fi
+
 # profiling
 if [ -n "$ZSH_PROFILING" ]; then
   if type zprof > /dev/null 2>&1; then
     zprof | less
   fi
 fi
-
-cdx() {
-  cd "$(dirname $(git ls-files | fzf))"
-}
 
 # https://github.com/sindresorhus/pure#my-preprompt-is-missing-when-i-clear-the-screen-with-ctrll 
 zle -N clear-screen prompt_pure_clear_screen
