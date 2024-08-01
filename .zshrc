@@ -132,7 +132,7 @@ fi
 # [ -f "$HOME/zsh.d/zprofile" ] && source "$HOME/zsh.d/zprofile"
 # [ -f "$HOME/zsh.d/zprofile_secret" ] && source "$HOME/zsh.d/zprofile_secret"
 
-export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${$GHQ_ROOT}/github.com/aquaproj/aqua-registry/aqua-all.yaml"
+export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${GHQ_ROOT}/github.com/aquaproj/aqua-registry/aqua-all.yaml"
 export AQUA_PROGRESS_BAR=true
 
 export GPG_TTY=$(tty)
