@@ -4,6 +4,10 @@ if [ -n "$ZSH_PROFILING" ]; then
   zmodload zsh/zprof && zprof
 fi
 
+if [ -f "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+fi
+
 case ${OSTYPE} in
   darwin*)
     # mac
@@ -73,6 +77,10 @@ export RBENV_ROOT="$HOME/.rbenv"
 export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
 
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
 export path=(
   $HOME/google-cloud-sdk/bin(N-/)
   ${KREW_ROOT:-$HOME/.krew}/bin(N-/)
@@ -81,6 +89,7 @@ export path=(
   $PYENV_ROOT/bin(N-/)
   $PYENV_ROOT/shims(N-/)
   $HOME/go/bin(N-/)
+  # $VOLTA_HOME/bin
   # rust
   $HOME/.cargo/bin(N-/)
   # https://github.com/hokaccha/nodebrew
@@ -90,6 +99,8 @@ export path=(
   # https://qiita.com/kinichiro/items/3108e950b056963c33ad
   # /usr/local/Cellar/openssl/1.0.2s/bin(N-/)
   "${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin"
+  # pipx
+  "$HOME/.local/bin"(N-/)
   $path
 )
 
@@ -122,11 +133,26 @@ fi
 # [ -f "$HOME/zsh.d/zprofile_secret" ] && source "$HOME/zsh.d/zprofile_secret"
 
 export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${$GHQ_ROOT}/github.com/aquaproj/aqua-registry/aqua-all.yaml"
+export AQUA_PROGRESS_BAR=true
+
+export GPG_TTY=$(tty)
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  . "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # autoload -Uz compinit
 autoload -Uz colors
 autoload -U compinit
 compinit -u
+
+gpr() {
+  git push origin "$(git-current-branch)"
+  gh pr create -w
+}
 
 # create the pull request based on the current branch
 _git-pr() {
@@ -134,16 +160,6 @@ _git-pr() {
   branch=$(git-current-branch)
   git push origin "$branch" || return 1
   hub pull-request -o -h "$GIT_USERNAME:$branch"
-}
-
-git-browse() {
-  local remote
-  remote=$(git config branch.master.remote)
-  test "$remote" != "" || return 1
-  if [ $# -eq 1 ]; then
-    remote=$1
-  fi
-  open "$(git config remote.${remote}.url)" &
 }
 
 nx() {
@@ -158,29 +174,24 @@ git_replace() {
   git grep -l "$1" | xargs -n 1 gsed -i "s/$1/$2/g"
 }
 
-clone_pr() {
-  read "remote?remote (ex. origin, upstream): "
-  if [ "$remote" = "" ]; then
-    return 0
-  fi
-  read "pr_id?pull request id: "
-  if [ "$pr_id" = "" ]; then
-    return 0
-  fi
-  read "branch_name?branch name: "
-  if [ "$branch_name" = "" ]; then
-    return 0
-  fi
-  echo "+ git fetch $remote pull/$pr_id/head:$branch_name"
-  git fetch "$remote" "pull/$pr_id/head:$branch_name"
+release() {
+	version=$1
+	git tag -m "chore: release $version" "$version"
+	git push origin "$version"
 }
 
+git_fix() {
+	git grep -l "$1" | xargs nvim
+}
+
+alias lt=lintnet
 alias sudo="sudo -E"
 alias ls="gls --color=auto"
-alias npm="npm --silent"
+# alias npm="npm --silent"
 alias tf="terraform"
 alias k="kubectl"
 alias cx="cmdx"
+# alias docker=podman
 
 bindkey -v
 
@@ -271,10 +282,10 @@ git-current-branch() {
 
 # hub
 # https://hub.github.com/
-if builtin command -v hub > /dev/null; then
-    alias git=hub
-    # eval "$(hub alias -s)"
-fi
+# if builtin command -v hub > /dev/null; then
+#     alias git=hub
+#     # eval "$(hub alias -s)"
+# fi
 
 # vim
 if builtin command -v nvim > /dev/null; then
@@ -291,7 +302,8 @@ if [ -n "$ZSH_PROFILING" ]; then
 fi
 
 # https://github.com/sindresorhus/pure#my-preprompt-is-missing-when-i-clear-the-screen-with-ctrll 
-zle -N clear-screen prompt_pure_clear_screen
+# zle -N clear-screen prompt_pure_clear_screen
+
 # fzf
 # https://github.com/junegunn/fzf
 [ -f "$HOME/.fzf.zsh" ] && source "$HOME/.fzf.zsh"
@@ -307,13 +319,13 @@ bindkey '^r' anyframe-widget-execute-history
 bindkey '^xp' anyframe-widget-put-history
 
 # https://github.com/gsamokovarov/jump
-eval "$(jump shell)"
+# eval "$(jump shell)"
 
 # kube-ps1
 # https://github.com/jonmosco/kube-ps1
-source "/usr/local/opt/kube-ps1/share/kube-ps1.sh"
-PS1='$(kube_ps1)'$PS1
-kubeoff
+# source "/usr/local/opt/kube-ps1/share/kube-ps1.sh"
+# PS1='$(kube_ps1)'$PS1
+# kubeoff
 
 # load this machine specific configuration
 [ -f "$HOME/zsh.d/zshrc" ] && source "$HOME/zsh.d/zshrc"
@@ -329,3 +341,42 @@ if [ -f "$URFAVE_CLI_COMPLETION" ]; then
   PROG=cmdx
   source "$URFAVE_CLI_COMPLETION"
 fi
+
+### Added by Zinit's installer
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "%F{33} %F{34}Installation successful.%f%b" || \
+        print -P "%F{160} The clone has failed.%f%b"
+fi
+
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+# Load a few important annexes, without Turbo
+# (this is currently required for annexes)
+zinit light-mode for \
+    zdharma-continuum/zinit-annex-as-monitor \
+    zdharma-continuum/zinit-annex-bin-gem-node \
+    zdharma-continuum/zinit-annex-patch-dl \
+    zdharma-continuum/zinit-annex-rust
+
+### End of Zinit's installer chunk
+
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+
+zinit load zsh-users/zsh-completions
+zinit load mollifier/anyframe
+zinit load mafredri/zsh-async
+zinit load lukechilds/zsh-nvm
+
+# eval "$(starship init zsh)"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# if command -v fnm >/dev/null 2>&1; then
+# 	eval "$(fnm env --use-on-cd)"
+# fi
