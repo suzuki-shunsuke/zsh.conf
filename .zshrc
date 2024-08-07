@@ -273,7 +273,7 @@ alias glog='git log'
 alias gtaga='git tag -a'
 alias gdt='git difftool'
 alias gdtc='git difftool --cached'
-alias gcm='git checkout master'
+alias gcm='git checkout main'
 alias gco='git checkout'
 
 git-current-branch() {
