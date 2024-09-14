@@ -167,11 +167,11 @@ nx() {
 }
 
 replace() {
-  ag -l --hidden "$1" | xargs -n 1 gsed -i "s/$1/$2/g"
+  ag -l --hidden "$1" | xargs -n 1 gsed -i "s|$1|$2|g"
 }
 
 git_replace() {
-  git grep -l "$1" | xargs -n 1 gsed -i "s/$1/$2/g"
+  git grep -l "$1" | xargs -n 1 gsed -i "s|$1|$2|g"
 }
 
 release() {
