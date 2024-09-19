@@ -77,9 +77,6 @@ export RBENV_ROOT="$HOME/.rbenv"
 export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
 
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 export path=(
   $HOME/google-cloud-sdk/bin(N-/)
@@ -103,6 +100,12 @@ export path=(
   "$HOME/.local/bin"(N-/)
   $path
 )
+
+export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${GHQ_ROOT}/github.com/aquaproj/aqua-registry/aqua-all.yaml"
+export AQUA_PROGRESS_BAR=true
+
+export NPM_CONFIG_PREFIX="${XDG_DATA_HOME:-$HOME/.local/share}/npm-global"
+export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
 
 if [ -d "$RBENV_ROOT" ]; then
   eval "$(rbenv init -)"
@@ -131,9 +134,6 @@ fi
 # load this machine specific configuration
 # [ -f "$HOME/zsh.d/zprofile" ] && source "$HOME/zsh.d/zprofile"
 # [ -f "$HOME/zsh.d/zprofile_secret" ] && source "$HOME/zsh.d/zprofile_secret"
-
-export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${GHQ_ROOT}/github.com/aquaproj/aqua-registry/aqua-all.yaml"
-export AQUA_PROGRESS_BAR=true
 
 export GPG_TTY=$(tty)
 
@@ -208,32 +208,6 @@ add-zsh-hook chpwd chpwd_recent_dirs
 # fi
 
 # zstyle :zplug:tag depth 1
-
-# if [ $ZPLUG_HOME ]; then
-#     # zplug "plugins/git", from:oh-my-zsh, if:"(( $+commands[git] ))"
-#     # zplug "plugins/command-not-found", from:oh-my-zsh
-#     zplug "zsh-users/zsh-completions"
-#     # zplug "zsh-users/zsh-syntax-highlighting", defer:2
-#     # zplug "mollifier/cd-gitroot"
-#     
-#     # load this machine specific configuration
-#     [ -f "$HOME/zsh.d/zplug" ] && source "$HOME/zsh.d/zplug"
-# 
-#     zplug "mollifier/anyframe", defer:2
-#     zplug "mafredri/zsh-async", on:sindresorhus/pure
-#     zplug "sindresorhus/pure", use:pure.zsh, defer:3
-#     zplug "lukechilds/zsh-nvm"
-# 
-# # 
-# #     if ! zplug check --verbose; then
-# #         printf "Install? [y/N]: "
-# #         if read -q; then
-# #             echo; zplug install
-# #         fi
-# #     fi
-# # 
-#     zplug load  # --verbose
-# fi
 
 # direnv
 # https://github.com/direnv/direnv
@@ -370,7 +344,6 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 zinit load zsh-users/zsh-completions
 zinit load mollifier/anyframe
 zinit load mafredri/zsh-async
-zinit load lukechilds/zsh-nvm
 
 # eval "$(starship init zsh)"
 
