@@ -54,6 +54,12 @@ add_manpath() {
   done
 }
 
+ls_assets() {
+  version=$1
+  repo=$2
+  gh release view --json assets --jq ".assets[].name" -R "$repo" "$version"
+}
+
 if command -v brew > /dev/null; then
   export path=(
     "$(brew --prefix coreutils)/libexec/gnubin"(N-/)
@@ -76,7 +82,6 @@ export RBENV_ROOT="$HOME/.rbenv"
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PYENV_SHELL=zsh
-
 
 export path=(
   $HOME/google-cloud-sdk/bin(N-/)
@@ -135,6 +140,10 @@ fi
 # [ -f "$HOME/zsh.d/zprofile" ] && source "$HOME/zsh.d/zprofile"
 # [ -f "$HOME/zsh.d/zprofile_secret" ] && source "$HOME/zsh.d/zprofile_secret"
 
+export AQUA_PROGRESS_BAR=true
+export NPM_CONFIG_PREFIX="${XDG_DATA_HOME:-$HOME/.local/share}/npm-global"
+export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
+
 export GPG_TTY=$(tty)
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -184,6 +193,7 @@ git_fix() {
 	git grep -l "$1" | xargs nvim
 }
 
+alias ags=/opt/homebrew/bin/ag
 alias lt=lintnet
 alias sudo="sudo -E"
 alias ls="gls --color=auto"
