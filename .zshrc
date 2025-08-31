@@ -108,6 +108,7 @@ export path=(
 
 export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${GHQ_ROOT}/github.com/aquaproj/aqua-registry/aqua-all.yaml"
 export AQUA_PROGRESS_BAR=true
+# export AQUA_KEYRING_ENABLED=true
 
 export NPM_CONFIG_PREFIX="${XDG_DATA_HOME:-$HOME/.local/share}/npm-global"
 export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
@@ -320,11 +321,11 @@ bindkey '^xp' anyframe-widget-put-history
 # The next line enables shell command completion for gcloud.
 # if [ -f '/Users/shunsuke-suzuki/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/shunsuke-suzuki/google-cloud-sdk/completion.zsh.inc'; fi
 
-URFAVE_CLI_COMPLETION="$HOME/repos/src/github.com/urfave/cli/autocomplete/zsh_autocomplete"
-if [ -f "$URFAVE_CLI_COMPLETION" ]; then
-  PROG=cmdx
-  source "$URFAVE_CLI_COMPLETION"
-fi
+# URFAVE_CLI_COMPLETION="$HOME/repos/src/github.com/urfave/cli/autocomplete/zsh_autocomplete"
+# if [ -f "$URFAVE_CLI_COMPLETION" ]; then
+#   PROG=cmdx
+#   source "$URFAVE_CLI_COMPLETION"
+# fi
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
@@ -363,3 +364,24 @@ zinit load mafredri/zsh-async
 # if command -v fnm >/dev/null 2>&1; then
 # 	eval "$(fnm env --use-on-cd)"
 # fi
+
+if command -v aqua &> /dev/null; then
+    source <(aqua completion zsh)
+fi
+
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+
+# Wasmer
+# export WASMER_DIR="/Users/shunsukesuzuki/.wasmer"
+# [ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"
+
+# ghtkn
+# https://github.com/suzuki-shunsuke/ghtkn
+for name in gh aqua; do
+  eval "
+  ${name}() {
+    local token=\"\$(ghtkn get)\"
+    env GH_TOKEN=\"\$token\" command ${name} \"\$@\"
+  }
+  "
+done
