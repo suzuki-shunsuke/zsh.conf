@@ -108,7 +108,7 @@ export path=(
 
 export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${GHQ_ROOT}/github.com/aquaproj/aqua-registry/aqua-all.yaml"
 export AQUA_PROGRESS_BAR=true
-# export AQUA_KEYRING_ENABLED=true
+export AQUA_GHTKN_ENABLED=true
 
 export NPM_CONFIG_PREFIX="${XDG_DATA_HOME:-$HOME/.local/share}/npm-global"
 export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
@@ -141,7 +141,6 @@ fi
 # [ -f "$HOME/zsh.d/zprofile" ] && source "$HOME/zsh.d/zprofile"
 # [ -f "$HOME/zsh.d/zprofile_secret" ] && source "$HOME/zsh.d/zprofile_secret"
 
-export AQUA_PROGRESS_BAR=true
 export NPM_CONFIG_PREFIX="${XDG_DATA_HOME:-$HOME/.local/share}/npm-global"
 export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
 
@@ -178,6 +177,14 @@ nx() {
 
 replace() {
   ag -l --hidden "$1" | xargs -n 1 gsed -i "s|$1|$2|g"
+}
+
+gllf() {
+  local sha
+  sha=$(git rev-parse HEAD)
+  git reset HEAD~1 --hard
+  git pull origin $(git-current-branch)
+  git cherry-pick "$sha"
 }
 
 git_replace() {
@@ -377,11 +384,20 @@ fi
 
 # ghtkn
 # https://github.com/suzuki-shunsuke/ghtkn
-for name in gh aqua; do
-  eval "
-  ${name}() {
-    local token=\"\$(ghtkn get)\"
-    env GH_TOKEN=\"\$token\" command ${name} \"\$@\"
-  }
-  "
-done
+# for name in aqua; do
+#   eval "
+#   ${name}() {
+#     local token=\"\$(ghtkn get)\"
+#     env GITHUB_TOKEN=\"\$token\" command ${name} \"\$@\"
+#   }
+#   "
+# done
+
+# https://github.com/suzuki-shunsuke/ghir
+export GHIR_ENABLE_GHTKN=true
+
+# https://github.com/suzuki-shunsuke/ghaperf
+export GHAPERF_GHTKN=true
+export PINACT_GHTKN=true
+
+export PINACT_MIN_AGE=3
